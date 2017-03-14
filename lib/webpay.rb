@@ -23,26 +23,32 @@ class Webpay
 
   def get_normal_transaction
     @webpay_normal = WebpayNormal.new(@configuration) if @webpay_normal.nil?
+    @webpay_normal
   end
 
   def get_mall_normal_transaction
     @webpay_mall_normal = WebpayMallNormal.new(@configuration) if @webpay_mall_normal.nil?
+    @webpay_mall_normal
   end
 
   def get_nullify_transaction
     @webpay_nullify = WebpayNullify.new(@configuration) if @webpay_nullify.nil?
+    @webpay_nullify
   end
 
   def get_capture_transaction
     @webpay_capture = WebpayCapture.new(@configuration) if  @webpay_capture.if nil?
+    @webpay_capture
   end
 
   def get_one_click_transaction
     @webpay_one_click = WebpayOneClick.new(@configuration) if @webpay_one_click.nil?
+    @webpay_one_click
   end
 
   def get_complete_transaction
     @webpay_complete_transaction = WebpayComplete.new(@configuration) if @webpay_complete_transaction.nil?
+    @webpay_complete_transaction
   end
 end
 

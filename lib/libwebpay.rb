@@ -11,9 +11,11 @@ class Libwebpay
 
   def get_webpay(config)
     @webpay = Webpay.new(config) if @webpay.nil?
+    @webpay
   end
 
   def get_configuration
     @configuration = Configuration.new if @configuration.nil?
+    @configuration
   end
 end
