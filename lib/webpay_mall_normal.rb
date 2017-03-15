@@ -207,7 +207,7 @@ class WebpayMallNormal
 
     #Realizar el acknowledge
     puts 'Iniciando acknowledge... '
-    acknowledgeTransaction(token)
+    acknowledge_transaction(token)
 
     return response_array
   end

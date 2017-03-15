@@ -189,7 +189,7 @@ class WebpayNormal
 
     #Realizar el acknowledge
     puts 'Se inicia acknowledgeTransaction...'
-    acknowledgeTransaction(token)
+    acknowledge_transaction(token)
 
     puts 'response normal:...'
     return response_array

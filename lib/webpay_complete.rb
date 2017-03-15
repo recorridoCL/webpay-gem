@@ -277,7 +277,7 @@ class WebpayComplete
         "error_desc" => 'TRX_OK'
     }
 
-    acknowledgeTransaction(token)
+    acknowledge_transaction(token)
 
     return response_array
   end
