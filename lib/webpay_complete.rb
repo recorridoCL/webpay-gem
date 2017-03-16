@@ -8,20 +8,19 @@ class WebpayComplete
 
   def initialize(configuration)
 
-
     @wsdl_path = ''
     @environment = configuration.environment
 
     case @environment
       when 'INTEGRACION'
-        @wsdl_path='https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSCompleteWebpayService?wsdl'
+        @wsdl_path = 'https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSCompleteWebpayService?wsdl'
       when 'CERTIFICACION'
-        @wsdl_path='https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSCompleteWebpayService?wsdl'
+        @wsdl_path = 'https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSCompleteWebpayService?wsdl'
       when 'PRODUCCION'
-        @wsdl_path='https://webpay3g.transbank.cl/WSWebpayTransaction/cxf/WSCompleteWebpayService?wsdl'
+        @wsdl_path ='https://webpay3g.transbank.cl/WSWebpayTransaction/cxf/WSCompleteWebpayService?wsdl'
       else
         #Por defecto esta el ambiente de INTEGRACION
-        @wsdl_path='https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSCompleteWebpayService?wsd'
+        @wsdl_path = 'https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSCompleteWebpayService?wsd'
     end
 
     @commerce_code = configuration.commerce_code
@@ -32,8 +31,6 @@ class WebpayComplete
 
   end
 
-
-  #######################################################
   def init_complete(amount, buyOrder, sessionId, cardExpirationDate, cvv, cardNumber)
 
     inputComplete ={
@@ -67,7 +64,7 @@ class WebpayComplete
     rescue Exception, RuntimeError => e
       puts "Ocurrio un error en la llamada a Webpay: "+e.message
       response_array ={
-          "error_desc" => "Ocurrio un error en la llamada a Webpay: "+e.message
+          "error_desc" => "Ocurrio un error en la llamada a Webpay: " + e.message
       }
       return response_array
     end
@@ -130,9 +127,9 @@ class WebpayComplete
       end
 
     rescue Exception, RuntimeError => e
-      puts "Ocurrio un error en la llamada a Webpay: "+e.message
+      puts "Ocurrio un error en la llamada a Webpay: " + e.message
       response_array ={
-          "error_desc" => "Ocurrio un error en la llamada a Webpay: "+e.message
+          "error_desc" => "Ocurrio un error en la llamada a Webpay: " + e.message
       }
       return response_array
     end
@@ -183,14 +180,11 @@ class WebpayComplete
     return response_array
   end
 
-
-  ##############################################
   def authorize(token, buyOrder, gracePeriod, idQueryShare, deferredPeriodIndex)
 
     input ={
         "token" => token,
         "paymentTypeList" => {
-            #    "wsCompletePaymentTypeInput" => {
             "commerceCode" => @commerce_code,
             "buyOrder" => buyOrder,
             "gracePeriod" => gracePeriod,
@@ -198,7 +192,6 @@ class WebpayComplete
                 "idQueryShare" => idQueryShare,
                 "deferredPeriodIndex" => deferredPeriodIndex
             }
-            #  }
         }
     }
 
@@ -206,7 +199,6 @@ class WebpayComplete
     req = @client.build_request(:authorize, message: input)
     #firmar la peticion
     document = sign_xml(req)
-    #document = Util.signXml(req)
 
     #Se realiza el getResult
     begin
@@ -217,16 +209,16 @@ class WebpayComplete
       end
 
     rescue Exception, RuntimeError => e
-      puts "Ocurrio un error en la llamada a Webpay: "+e.message
+      puts "Ocurrio un error en la llamada a Webpay: #{e.message}"
       response_array ={
-          "error_desc" => "Ocurrio un error en la llamada a Webpay: "+e.message
+          "error_desc" => "Ocurrio un error en la llamada a Webpay: #{e.message}"
       }
       return response_array
     end
 
     #Se revisa que respuesta no sea nula.
     if response
-      puts 'Respuesta authorize: '+ response.to_s
+      puts "Respuesta authorize: #{response.to_s}"
     else
       puts 'Webservice Webpay responde con null'
       response_array ={
@@ -241,47 +233,30 @@ class WebpayComplete
     tbk_cert = OpenSSL::X509::Certificate.new(@webpay_cert)
 
     if !Verifier.verify(response, tbk_cert)
-      response_array ={
-          "error_desc" => 'El Certificado de respuesta es Invalido'
-      }
+      response_array = { "error_desc" => 'El Certificado de respuesta es Invalido' }
       return response_array
     else
       puts "El Certificado de respuesta es Valido."
     end
 
-
     response_document = Nokogiri::HTML(response.to_s)
     puts response_document.to_s
 
-    responseCode = response_document.xpath("//responsecode").text
-    buyOrder = response_document.xpath("//buyorder")
-    sharesNumber = response_document.xpath("//sharesnumber").text
-    amount = response_document.xpath("//amount").text
-    commerceCode = response_document.xpath("//commercecode").text
-    authorizationCode = response_document.xpath("//authorizationcode").text
-    paymentTypeCode = response_document.xpath("//paymenttypecode").text
-    sessionId = response_document.xpath("//sessionid").text
-    transactionDate = response_document.xpath("//transactiondate").text
-
-
-    response_array ={
-        "responseCode" => responseCode.to_s,
-        "buyOrder" => buyOrder.to_s,
-        "sharesNumber" => sharesNumber.to_s,
-        "amount" => amount.to_s,
-        "commerceCode" => commerceCode.to_s,
-        "authorizationCode" => authorizationCode.to_s,
-        "paymentTypeCode" => paymentTypeCode.to_s,
-        "sessionId" => sessionId.to_s,
-        "transactionDate" => transactionDate.to_s,
-        "error_desc" => 'TRX_OK'
-    }
-
     acknowledge_transaction(token)
 
-    return response_array
+    return {
+        "response_code" => response_document.xpath("//responsecode").text.to_s,
+        "buy_order" => response_document.xpath("//buyorder").to_s,
+        "shares_number" => response_document.xpath("//sharesnumber").text.to_s,
+        "amount" => response_document.xpath("//amount").text.to_s,
+        "commerce_code" => response_document.xpath("//commercecode").text.to_s,
+        "authorization_code" => response_document.xpath("//authorizationcode").text.to_s,
+        "payment_type_code" => response_document.xpath("//paymenttypecode").text.to_s,
+        "session_id" => response_document.xpath("//sessionid").text.to_s,
+        "transaction_date" => response_document.xpath("//transactiondate").text.to_s,
+        "error_desc" => 'TRX_OK'
+    }
   end
-
 
   ################################
   def acknowledge_transaction(token)
