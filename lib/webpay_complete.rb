@@ -244,7 +244,7 @@ class WebpayComplete
 
     acknowledge_transaction(token)
 
-    return {
+    {
         "response_code" => response_document.xpath("//responsecode").text.to_s,
         "buy_order" => response_document.xpath("//buyorder").to_s,
         "shares_number" => response_document.xpath("//sharesnumber").text.to_s,

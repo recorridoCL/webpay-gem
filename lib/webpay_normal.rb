@@ -159,40 +159,26 @@ class WebpayNormal
 
     response_document = Nokogiri::HTML(response.to_s)
 
-    accountingdate = response_document.xpath("//accountingdate").text
-    buyorder = response_document.at_xpath("//buyorder").text
-    cardnumber = response_document.xpath("//cardnumber").text
-    amount = response_document.xpath("//amount").text
-    commercecode = response_document.xpath("//commercecode").text
-    authorizationcode = response_document.xpath("//authorizationcode").text
-    paymenttypecode = response_document.xpath("//paymenttypecode").text
-    responsecode = response_document.xpath("//responsecode").text
-    transactiondate = response_document.xpath("//transactiondate").text
-    urlredirection = response_document.xpath("//urlredirection").text
-    vci = response_document.xpath("//vci").text
-
-    response_array ={
-        "accountingdate" => accountingdate.to_s,
-        "buyorder" => buyorder.to_s,
-        "cardnumber" => cardnumber.to_s,
-        "amount" => amount.to_s,
-        "commercecode" => commercecode.to_s,
-        "authorizationcode" => authorizationcode.to_s,
-        "paymenttypecode" => paymenttypecode.to_s,
-        "responsecode" => responsecode.to_s,
-        "transactiondate" => transactiondate.to_s,
-        "urlredirection" => urlredirection.to_s,
-        "vci" => vci.to_s,
-        "error_desc" => 'TRX_OK'
-    }
-
-
     #Realizar el acknowledge
     puts 'Se inicia acknowledgeTransaction...'
     acknowledge_transaction(token)
 
     puts 'response normal:...'
-    return response_array
+
+    {
+        "accounting_date" => response_document.xpath("//accountingdate").text.to_s,
+        "buy_order" => response_document.at_xpath("//buyorder").text.to_s,
+        "card_number" => response_document.xpath("//cardnumber").text.to_s,
+        "amount" => response_document.xpath("//amount").text.to_s,
+        "commerce_code" => response_document.xpath("//commercecode").text.to_s,
+        "authorization_code" => response_document.xpath("//authorizationcode").text.to_s,
+        "payment_type_code" => response_document.xpath("//paymenttypecode").text.to_s,
+        "response_code" => response_document.xpath("//responsecode").text.to_s,
+        "transaction_date" => response_document.xpath("//transactiondate").text.to_s,
+        "url_redirection" => response_document.xpath("//urlredirection").text.to_s,
+        "vci" => response_document.xpath("//vci").text.to_s,
+        "error_desc" => 'TRX_OK'
+    }
   end
 
 
