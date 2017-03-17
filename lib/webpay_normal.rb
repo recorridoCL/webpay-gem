@@ -159,12 +159,6 @@ class WebpayNormal
 
     response_document = Nokogiri::HTML(response.to_s)
 
-    #Realizar el acknowledge
-    puts 'Se inicia acknowledgeTransaction...'
-    acknowledge_transaction(token)
-
-    puts 'response normal:...'
-
     {
         "accounting_date" => response_document.xpath("//accountingdate").text.to_s,
         "buy_order" => response_document.at_xpath("//buyorder").text.to_s,

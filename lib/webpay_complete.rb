@@ -242,8 +242,6 @@ class WebpayComplete
     response_document = Nokogiri::HTML(response.to_s)
     puts response_document.to_s
 
-    acknowledge_transaction(token)
-
     {
         "response_code" => response_document.xpath("//responsecode").text.to_s,
         "buy_order" => response_document.xpath("//buyorder").to_s,
