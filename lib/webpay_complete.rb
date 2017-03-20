@@ -116,12 +116,11 @@ class WebpayComplete
     req = @client.build_request(:query_share, message: inputQuery)
     #firmar la peticion
     document = sign_xml(req)
-    #document = Util.signXml(req)
-
 
     #Se realiza el getResult
     begin
       puts "Iniciando queryShare..."
+      puts document.inspect
       response = @client.call(:query_share) do
         xml document.to_xml(:save_with => 0)
       end
@@ -136,7 +135,7 @@ class WebpayComplete
 
     #Se revisa que respuesta no sea nula.
     if response
-      puts 'Respuesta finishInscription: '+ response.to_s
+      puts 'Respuesta finishInscription: ' + response.to_s
     else
       puts 'Webservice Webpay responde con null'
       response_array ={
