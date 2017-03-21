@@ -171,6 +171,7 @@ class WebpayNormal
         "transaction_date" => response_document.xpath("//transactiondate").text.to_s,
         "url_redirection" => response_document.xpath("//urlredirection").text.to_s,
         "vci" => response_document.xpath("//vci").text.to_s,
+        "shares_number" => response_document.xpath("//sharesnumber").text.to_s,
         "error_desc" => 'TRX_OK'
     }
   end
