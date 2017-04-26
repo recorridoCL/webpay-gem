@@ -54,7 +54,7 @@ class WebpayNormal
 
     #Firmar documento
     document = sign_xml(req)
-    puts document
+    puts "Documento firmado: #{document.to_s}"
 
     begin
       response = @client.call(:init_transaction) do
