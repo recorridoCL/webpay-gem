@@ -28,8 +28,8 @@ class WebpayNormal
     @webpay_cert = OpenSSL::X509::Certificate.new(configuration.webpay_cert)
     @client = Savon.client(wsdl: @wsdl_path,
                            log_level: :debug,
-                           open_timeout: 60,
-                           read_timeout: 60,
+                           open_timeout: 10,
+                           read_timeout: 10,
                            log: true)
 
   end
