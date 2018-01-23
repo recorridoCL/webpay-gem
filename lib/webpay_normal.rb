@@ -26,7 +26,11 @@ class WebpayNormal
     @private_key = OpenSSL::PKey::RSA.new(configuration.private_key)
     @public_cert = OpenSSL::X509::Certificate.new(configuration.public_cert)
     @webpay_cert = OpenSSL::X509::Certificate.new(configuration.webpay_cert)
-    @client = Savon.client(wsdl: @wsdl_path)
+    @client = Savon.client(wsdl: @wsdl_path,
+                           log_level: :debug,
+                           open_timeout: 60,
+                           read_timeout: 60,
+                           log: true)
 
   end
 
