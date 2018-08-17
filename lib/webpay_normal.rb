@@ -58,16 +58,16 @@ class WebpayNormal
 
     #Firmar documento
     document = sign_xml(req)
-    puts "Documento firmado: #{document.to_s.gsub("\n", '')}"
+    puts "Documento firmado para #{buyOrder} en InitTransaction: #{document.to_s.gsub("\n", '')}"
 
     begin
       response = @client.call(:init_transaction) do
         xml document.to_xml(:save_with => 0)
       end
     rescue Exception, RuntimeError => e
-      puts "Ocurrio un error en la llamada a Webpay: "+e.message
+      puts "Ocurrio un error en la llamada a Webpay para #{buyOrder} en InitTransaction: #{e.message}"
       response_array ={
-          "error_desc" => "Ocurrio un error en la llamada a Webpay: "+e.message
+          "error_desc" => "Ocurrio un error en la llamada a Webpay para #{buyOrder} en InitTransaction: #{e.message}"
       }
       return response_array
     end
@@ -76,13 +76,13 @@ class WebpayNormal
     tbk_cert = OpenSSL::X509::Certificate.new(@webpay_cert)
 
     if !Verifier.verify(response, tbk_cert)
-      puts "El Certificado de respuesta es Invalido."
+      puts "El Certificado de respuesta es Invalido para #{buyOrder} en InitTransaction"
       response_array ={
           "error_desc" => 'El Certificado de respuesta es Invalido'
       }
       return response_array
     else
-      puts "El Certificado de respuesta es Valido."
+      puts "El Certificado de respuesta es Valido para #{buyOrder} en InitTransaction"
     end
 
 
@@ -96,8 +96,8 @@ class WebpayNormal
       url = url_value.text
     end
 
-    puts 'token: '+token
-    puts 'url: '+url
+    puts "token para #{buyOrder} es #{token}"
+    puts "url para #{buyOrder} es #{url}"
 
     response_array ={
         "token" => token.to_s,
@@ -123,24 +123,24 @@ class WebpayNormal
 
     #Se realiza el getResult
     begin
-      puts "Iniciando GetResult..."
+      puts "Iniciando GetResult para #{token}"
       response = @client.call(:get_transaction_result) do
         xml document.to_xml(:save_with => 0)
       end
 
     rescue Exception, RuntimeError => e
-      puts "Ocurrio un error en la llamada a Webpay: "+e.message
+      puts "Ocurrio un error en la llamada a Webpay para #{token} en GetResult: #{e.message}"
       response_array ={
-          "error_desc" => "Ocurrio un error en la llamada a Webpay: "+e.message
+          "error_desc" => "Ocurrio un error en la llamada a Webpay para #{token} en GetResult: #{e.message}"
       }
       return response_array
     end
 
     #Se revisa que respuesta no sea nula.
     if response
-      puts 'Respuesta getResult: '+ response.to_s
+      puts "Respuesta GetResult para #{token}: #{response.to_s}"
     else
-      puts 'Webservice Webpay responde con null'
+      puts "Webservice Webpay responde con null para #{token}"
       response_array ={
           "error_desc" => 'Webservice Webpay responde con null'
       }
@@ -151,13 +151,13 @@ class WebpayNormal
     tbk_cert = OpenSSL::X509::Certificate.new(@webpay_cert)
 
     if !Verifier.verify(response, tbk_cert)
-      puts "El Certificado de respuesta es Invalido"
+      puts "El Certificado de respuesta es Invalido para #{token} en GetResult"
       response_array ={
           "error_desc" => 'El Certificado de respuesta es Invalido'
       }
       return response_array
     else
-      puts "El Certificado de respuesta es Valido."
+      puts "El Certificado de respuesta es Valido para #{token} en GetResult"
     end
 
 
@@ -195,24 +195,24 @@ class WebpayNormal
 
     #Se realiza el acknowledge_transaction
     begin
-      puts "Iniciando acknowledge_transaction..."
+      puts "Iniciando acknowledge_transaction para #{token} ..."
       response = @client.call(:acknowledge_transaction, message: acknowledgeInput) do
         xml document.to_xml(:save_with => 0)
       end
 
     rescue Exception, RuntimeError => e
-      puts "Ocurrio un error en la llamada a Webpay: "+e.message
+      puts "Ocurrio un error en la llamada a Webpay para #{token} en acknowledge_transaction:  #{e.message}"
       response_array ={
-          "error_desc" => "Ocurrio un error en la llamada a Webpay: "+e.message
+          "error_desc" => "Ocurrio un error en la llamada a Webpay para #{token} en acknowledge_transaction:  #{e.message}"
       }
       return response_array
     end
 
     #Se revisa que respuesta no sea nula.
     if response
-      puts 'Respuesta acknowledge_transaction: '+ response.to_s
+      puts "Respuesta acknowledge_transaction para #{token} : #{response.to_s}"
     else
-      puts 'Webservice Webpay responde con null'
+      puts "Webservice Webpay responde con null para #{token} en acknowledge_transaction"
       response_array ={
           "error_desc" => 'Webservice Webpay responde con null'
       }
@@ -223,13 +223,13 @@ class WebpayNormal
     tbk_cert = OpenSSL::X509::Certificate.new(@webpay_cert)
 
     if !Verifier.verify(response, tbk_cert)
-      puts "El Certificado de respuesta es Invalido."
+      puts "El Certificado de respuesta es Invalido para #{token} en acknowledge_transaction"
       response_array ={
           "error_desc" => 'El Certificado de respuesta es Invalido'
       }
       return response_array
     else
-      puts "El Certificado de respuesta es Valido."
+      puts "El Certificado de respuesta es Valido para #{token} en acknowledge_transaction"
     end
 
     response_array ={
