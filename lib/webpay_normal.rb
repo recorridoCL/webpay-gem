@@ -17,6 +17,7 @@ class WebpayNormal
       log_level: :debug,
       open_timeout: 10,
       read_timeout: 10,
+      ssl_verify_mode: :none,
       log: true
     }
     base_config[:proxy] = @proxy if @proxy
