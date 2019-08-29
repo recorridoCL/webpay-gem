@@ -7,7 +7,7 @@ class WebpayNormal
   def initialize(configuration)
     @environment = configuration.environment
     @proxy = configuration.proxy
-    @wsdl_path = "./wsdl/normal/#{@environment.downcase}.xml"
+    @wsdl_path = File.expand_path("./wsdl/normal/#{@environment.downcase}.xml")
     @commerce_code = configuration.commerce_code
     @private_key = OpenSSL::PKey::RSA.new(configuration.private_key)
     @public_cert = OpenSSL::X509::Certificate.new(configuration.public_cert)
