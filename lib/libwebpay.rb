@@ -6,16 +6,11 @@ require_relative 'webpay'
 
 class Libwebpay
 
-  @configuration
-  @webpay
-
-  def get_webpay(config)
-    @webpay = Webpay.new(config) if @webpay.nil?
-    @webpay
+  def webpay(config)
+    @webpay ||= Webpay.new(config)
   end
 
-  def get_configuration
-    @configuration = Configuration.new if @configuration.nil?
-    @configuration
+  def configuration
+    @configuration ||= Configuration.new
   end
 end
