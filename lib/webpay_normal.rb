@@ -5,33 +5,22 @@ require_relative "verifier"
 class WebpayNormal
 
   def initialize(configuration)
-
-    @wsdl_path = ''
     @environment = configuration.environment
-
-    case @environment
-      when 'INTEGRACION'
-        @wsdl_path='https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSWebpayService?wsdl'
-      when 'CERTIFICACION'
-        @wsdl_path='https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSWebpayService?wsdl'
-      when 'PRODUCCION'
-        @wsdl_path='https://webpay3g.transbank.cl/WSWebpayTransaction/cxf/WSWebpayService?wsdl'
-      else
-        #Por defecto esta el ambiente de INTEGRACION
-        @wsdl_path='https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSWebpayService?wsdl'
-    end
-
-
+    @proxy = configuration.proxy
+    @wsdl_path = "lib/wsdl/normal/#{@environment.downcase}.xml"
     @commerce_code = configuration.commerce_code
     @private_key = OpenSSL::PKey::RSA.new(configuration.private_key)
     @public_cert = OpenSSL::X509::Certificate.new(configuration.public_cert)
     @webpay_cert = OpenSSL::X509::Certificate.new(configuration.webpay_cert)
-    @client = Savon.client(wsdl: @wsdl_path,
-                           log_level: :debug,
-                           open_timeout: 10,
-                           read_timeout: 10,
-                           log: true)
-
+    base_config = {
+      wsdl: @wsdl_path,
+      log_level: :debug,
+      open_timeout: 10,
+      read_timeout: 10,
+      log: true
+    }
+    base_config[:proxy] = @proxy if @proxy
+    @client = Savon.client(base_config)
   end
 
 
