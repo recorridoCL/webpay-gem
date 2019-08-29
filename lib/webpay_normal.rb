@@ -20,7 +20,7 @@ class WebpayNormal
       ssl_verify_mode: :none,
       log: true
     }
-    base_config[:proxy] = @proxy if @proxy
+    base_config[:endpoint] = "#{@proxy}/WSWebpayTransaction/cxf/WSWebpayService" if @proxy
     @client = Savon.client(base_config)
   end
 
