@@ -15,8 +15,8 @@ class WebpayNormal
     base_config = {
       wsdl: @wsdl_path,
       log_level: :debug,
-      open_timeout: 10,
-      read_timeout: 10,
+      open_timeout: 20,
+      read_timeout: 20,
       ssl_verify_mode: :none,
       log: true
     }
